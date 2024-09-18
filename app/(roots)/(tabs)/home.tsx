@@ -18,7 +18,7 @@ const imagesGrid2 = [
   { id: 4, source: require("@/assets/images/Frame 427319376.png") },
 ];
 const handleImagePress = (imageId: number) => {
- router.navigate('/(roots)/details');
+  router.navigate("/(roots)/details");
 };
 
 const Home = () => {
@@ -50,7 +50,10 @@ const Home = () => {
       >
         <View className="flex-1">
           {imagesGrid1.map((img) => (
-            <TouchableOpacity onPress={() => handleImagePress(img.id)} key={img.id}>
+            <TouchableOpacity
+              onPress={() => handleImagePress(img.id)}
+              key={img.id}
+            >
               <Image
                 key={img.id}
                 source={img.source}
@@ -63,14 +66,17 @@ const Home = () => {
 
         <View className="flex-1">
           {imagesGrid2.map((img) => (
-            <TouchableOpacity onPress={() => handleImagePress(img.id)} key={img.id}>
-            <Image
+            <TouchableOpacity
+              onPress={() => handleImagePress(img.id)}
               key={img.id}
-              source={img.source}
-              resizeMode="contain"
-              className=" mb-4  w-[100%]"
-            />
-          </TouchableOpacity>
+            >
+              <Image
+                key={img.id}
+                source={img.source}
+                resizeMode="contain"
+                className=" mb-4  w-[100%]"
+              />
+            </TouchableOpacity>
           ))}
         </View>
       </ScrollView>
