@@ -1,6 +1,5 @@
 import React from "react";
 import { View, Image, Text, ScrollView, TouchableOpacity } from "react-native";
-import { styled } from "nativewind"; // Assuming you're using NativeWind
 import { image } from "@/constants";
 import { router } from "expo-router";
 
