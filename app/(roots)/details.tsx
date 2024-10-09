@@ -3,9 +3,15 @@ import { View, Image, Text, TouchableOpacity } from "react-native";
 import { image } from "@/constants";
 import CustomButton from "@/components/Custombutton";
 import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
+import { useRouter } from "expo-router";
 
 const Details = () => {
+  const router = useRouter();
+
+  const handlePress = () => {
+    router.push("/questions");
+  };
+
   return (
     <View className="flex-1">
       <Image
@@ -20,11 +26,11 @@ const Details = () => {
       <TouchableOpacity
         style={{
           position: "absolute",
-          top: 50, 
-          left: 16, 
+          top: 50,
+          left: 16,
           zIndex: 1,
         }}
-        onPress={() => router.back()} 
+        onPress={() => router.back()}
       >
         <Ionicons name="arrow-back-outline" size={24} color="#009951" />
       </TouchableOpacity>
@@ -56,6 +62,7 @@ const Details = () => {
             title="Continue"
             textStyles="text-white"
             containerStyles="bg-[#009951] mb-4 "
+            handlePress={handlePress}
           />
           <CustomButton
             title="Tutorial"
