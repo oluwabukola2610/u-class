@@ -7,19 +7,24 @@ export const questionsData = [
   {
     id: 1,
     question: "Is this a dense forest?",
-    image: require("@/assets/images/Frame 427319375.png"),
+    image1: require("@/assets/images/Frame 427319375.png"),
+    image2: require("@/assets/images/Frame 427319376.png"),
     type: "yesno",
   },
   {
     id: 2,
     question: "How much percent forest cover?",
-    image: require("@/assets/images/Frame 427319375.png"),
+
+    image1: require("@/assets/images/Frame 427319375.png"),
+    image2: require("@/assets/images/Frame 427319376.png"),
     type: "percent",
   },
   {
     id: 3,
     question: "Is the forest healthy?",
-    image: require("@/assets/images/Frame 427319375.png"),
+
+    image1: require("@/assets/images/Frame 427319375.png"),
+    image2: require("@/assets/images/Frame 427319376.png"),
     type: "percent",
   },
 ];
