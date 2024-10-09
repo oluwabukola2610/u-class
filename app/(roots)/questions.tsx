@@ -1,5 +1,12 @@
-import { View, Text, Image, Dimensions, TouchableOpacity } from "react-native";
-import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  Image,
+  Dimensions,
+  TouchableOpacity,
+  Modal,
+} from "react-native";
+import React, { useEffect, useRef, useState } from "react";
 import {
   GestureHandlerRootView,
   PanGestureHandler,
@@ -21,9 +28,11 @@ import {
   SWIPE_THRESHOLD,
   VERTICAL_SWIPE_THRESHOLD,
   height,
+  image,
   questionsData,
   width,
 } from "@/constants";
+import Swiper from "react-native-swiper";
 
 const Questions = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -31,10 +40,12 @@ const Questions = () => {
   const [activeOptionIndex, setActiveOptionIndex] = useState<number | null>(
     null
   );
-
+  const [showLayer, setShowLayer] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const swiperRef = useRef<Swiper>(null);
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
-  const imageScale = useSharedValue(1); // To scale the image down while dragging
+  const imageScale = useSharedValue(1);
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -78,27 +89,19 @@ const Questions = () => {
       }
     }
   };
-  useEffect(() => {}, [answers]);
 
   const onGestureEnd = (event: any) => {
     const { translationX, translationY } = event.nativeEvent;
-    // console.log(questionsData[currentIndex].type);
-    console.log(event.nativeEvent);
-
     if (questionsData[currentIndex].type == "yesno") {
-      //   console.log("in here");
       if (translationX > SWIPE_THRESHOLD) {
-        // Swiped right -> 'yes'
         translateX.value = withSpring(0);
         translateY.value = withSpring(0);
         runOnJS(handleSwipe)("yes");
       } else if (translationX < -SWIPE_THRESHOLD) {
-        // Swiped left -> 'no'
         translateX.value = withSpring(0);
         translateY.value = withSpring(0);
         runOnJS(handleSwipe)("no");
       } else if (translationY > VERTICAL_SWIPE_THRESHOLD) {
-        // Swiped down -> 'unsure'
         translateX.value = withSpring(0);
         translateY.value = withSpring(0);
         runOnJS(handleSwipe)("unsure");
@@ -109,12 +112,9 @@ const Questions = () => {
     } else {
       if (translationY > VERTICAL_SWIPE_THRESHOLD) {
         const selectedOption = getSelectedOptionn(translationX);
-        console.log(translateX);
-        getSelectedOptionn;
         translateX.value = withSpring(0);
         translateY.value = withSpring(0);
         imageScale.value = withSpring(1);
-
         runOnJS(handleSwipe)(selectedOption);
       } else {
         translateX.value = withSpring(0);
@@ -126,16 +126,14 @@ const Questions = () => {
 
   const getSelectedOptionn = (translationX: number) => {
     setActiveOptionIndex(null);
-    const screenHeight = width;
     if (translationX < -90) {
-      console.log(screenHeight / 4);
       return "30%";
     }
     if (translationX < 0 && translationX > -90) return "70%";
     if (translationX > 0 && translationX < 90) return "100%";
     return "unsure";
   };
-  console.log(answers);
+
   const renderPercentageOptions = () => {
     return (
       <View className="flex-row w-full px-4 mb-5 mt-auto justify-center gap-x-1">
@@ -153,6 +151,20 @@ const Questions = () => {
       </View>
     );
   };
+
+  const renderImageLayer = () => {
+    if (!showLayer) return null;
+    return (
+      <Image
+        source={{ uri: "/assets/images/Frame 427319387.png" }}
+        style={{
+          position: "absolute",
+          zIndex: 1,
+        }}
+      />
+    );
+  };
+
   return (
     <CustomBackground>
       <View className="flex-1  items-center">
@@ -169,6 +181,7 @@ const Questions = () => {
               onEnded={onGestureEnd}
             >
               <Animated.View style={[animatedStyle]}>
+                {renderImageLayer()}
                 <Image
                   source={questionsData[currentIndex].image}
                   style={{
@@ -178,29 +191,32 @@ const Questions = () => {
                   className=" mt-4"
                 />
                 {questionsData[currentIndex].type === "yesno" && (
-                  <>
-                    <View className="absolute flex-row justify-between w-full mb-5  top-[45%]">
-                      <TouchableOpacity className="flex left-3 bg-white w-12 h-12 rounded-lg justify-center items-center">
-                        <Ionicons name="arrow-undo" size={24} color="black" />
-                        <Text className="ml-1 font-bold">No</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity className=" right-3 bg-white w-12 h-12 rounded-lg justify-center items-center">
-                        <Ionicons
-                          name="arrow-redo-sharp"
-                          size={24}
-                          color="black"
-                        />
-                        <Text className=" font-bold">Yes</Text>
-                      </TouchableOpacity>
-                    </View>
-                  </>
+                  <View className="absolute flex-row justify-between w-full mb-5  top-[45%]">
+                    <TouchableOpacity className="flex left-3 bg-white w-12 h-12 rounded-lg justify-center items-center">
+                      <Ionicons name="arrow-undo" size={24} color="black" />
+                      <Text className="ml-1 font-bold">No</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity className=" right-3 bg-white w-12 h-12 rounded-lg justify-center items-center">
+                      <Ionicons
+                        name="arrow-redo-sharp"
+                        size={24}
+                        color="black"
+                      />
+                      <Text className=" font-bold">Yes</Text>
+                    </TouchableOpacity>
+                  </View>
                 )}
                 <View className="absolute flex-row justify-between w-full  bottom-[2%]">
-                  <TouchableOpacity className="flex flex-row left-3 bg-white px-2  rounded-lg justify-center items-center">
+                  <TouchableOpacity className="flex flex-row left-3 bg-white px-2  rounded-lg justify-center items-center z-1">
                     <SimpleLineIcons name="layers" size={15} color="black" />
                     <Text className="text-sm ml-2">Layer1</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity className=" right-3 rounded-lg justify-center items-center">
+                  <TouchableOpacity
+                    onPress={() => {
+                      setModalVisible(true);
+                    }}
+                    className=" right-3 rounded-lg justify-center items-center"
+                  >
                     <Feather name="info" size={24} color="white" />
                   </TouchableOpacity>
                 </View>
@@ -216,8 +232,58 @@ const Questions = () => {
         )}
         {questionsData[currentIndex].type === "percent" &&
           renderPercentageOptions()}
+
+        <Modal visible={modalVisible} transparent={true} animationType="fade">
+          <View className="flex-1 justify-center items-center bg-black/50">
+            <View className="bg-white rounded-lg p-3 w-[90%] h-[400px]">
+              <TouchableOpacity
+                onPress={() => setModalVisible(false)}
+                className="absolute top-5 right-3 z-10"
+              >
+                <Ionicons name="close" size={25} />
+              </TouchableOpacity>
+
+              <Swiper
+                loop={false}
+                showsPagination={true}
+                ref={swiperRef}
+                dotStyle={{
+                  backgroundColor: "#e5e5e5",
+                  width: 10,
+                  height: 10,
+                  borderRadius: 5,
+                  marginHorizontal: 3,
+                }}
+                activeDotStyle={{
+                  backgroundColor: "green",
+                  width: 20,
+                  height: 10,
+                  borderRadius: 5,
+                  marginHorizontal: 3,
+                }}
+              >
+                {questionsData.map((question, index) => (
+                  <View
+                    key={index}
+                    className="flex-1 justify-center items-center"
+                  >
+                    <Image
+                      source={image.forest}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        resizeMode: "contain",
+                      }}
+                    />
+                  </View>
+                ))}
+              </Swiper>
+            </View>
+          </View>
+        </Modal>
       </View>
     </CustomBackground>
   );
 };
+
 export default Questions;
