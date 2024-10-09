@@ -42,6 +42,7 @@ const Questions = () => {
   );
   const [showLayer, setShowLayer] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [isImage1, setIsImage1] = useState(true);
   const swiperRef = useRef<Swiper>(null);
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
@@ -92,7 +93,10 @@ const Questions = () => {
 
   const onGestureEnd = (event: any) => {
     const { translationX, translationY } = event.nativeEvent;
+
     if (questionsData[currentIndex].type == "yesno") {
+      setActiveOptionIndex(null);
+      setIsImage1(true);
       if (translationX > SWIPE_THRESHOLD) {
         translateX.value = withSpring(0);
         translateY.value = withSpring(0);
@@ -111,6 +115,8 @@ const Questions = () => {
       }
     } else {
       if (translationY > VERTICAL_SWIPE_THRESHOLD) {
+        setIsImage1(true);
+
         const selectedOption = getSelectedOptionn(translationX);
         translateX.value = withSpring(0);
         translateY.value = withSpring(0);
@@ -126,9 +132,7 @@ const Questions = () => {
 
   const getSelectedOptionn = (translationX: number) => {
     setActiveOptionIndex(null);
-    if (translationX < -90) {
-      return "30%";
-    }
+    if (translationX < -90) return "30%";
     if (translationX < 0 && translationX > -90) return "70%";
     if (translationX > 0 && translationX < 90) return "100%";
     return "unsure";
@@ -168,7 +172,7 @@ const Questions = () => {
   return (
     <CustomBackground>
       <View className="flex-1  items-center">
-        <Text className="text-lg text-center font-bold text-[20px] mt-10 px-1.5 leading-5">
+        <Text className="text-lg text-center font-bold text-[20px] mt-0 px-1.5 leading-5">
           {questionsData[currentIndex].question}
         </Text>
         <Text className="mb-10 text-[16px] italic text-gray-400">
@@ -183,7 +187,11 @@ const Questions = () => {
               <Animated.View style={[animatedStyle]}>
                 {renderImageLayer()}
                 <Image
-                  source={questionsData[currentIndex].image}
+                  source={
+                    isImage1
+                      ? questionsData[currentIndex].image1
+                      : questionsData[currentIndex].image2
+                  }
                   style={{
                     width: width - 20,
                     height: width - 20 * imageScale.value,
@@ -207,9 +215,16 @@ const Questions = () => {
                   </View>
                 )}
                 <View className="absolute flex-row justify-between w-full  bottom-[2%]">
-                  <TouchableOpacity className="flex flex-row left-3 bg-white px-2  rounded-lg justify-center items-center z-1">
+                  <TouchableOpacity
+                    onPress={() => {
+                      setIsImage1(!isImage1);
+                    }}
+                    className="flex flex-row left-3 bg-white px-2  rounded-lg justify-center items-center z-1"
+                  >
                     <SimpleLineIcons name="layers" size={15} color="black" />
-                    <Text className="text-sm ml-2">Layer1</Text>
+                    <Text className="text-sm ml-2">
+                      Layer{isImage1 ? 1 : 2}
+                    </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => {
@@ -234,15 +249,16 @@ const Questions = () => {
           renderPercentageOptions()}
 
         <Modal visible={modalVisible} transparent={true} animationType="fade">
-          <View className="flex-1 justify-center items-center bg-black/50">
-            <View className="bg-white rounded-lg p-3 w-[90%] h-[400px]">
-              <TouchableOpacity
-                onPress={() => setModalVisible(false)}
-                className="absolute top-5 right-3 z-10"
-              >
-                <Ionicons name="close" size={25} />
-              </TouchableOpacity>
-
+          <View className="flex-1 justify-center items-center bg-black/90">
+            <View className="bg-green-50 rounded-lg p-3 w-[94%] h-[350px]">
+              <View className="flex flex-row items-center justify-between px-1 ">
+                <Text className="text-center flex-grow text-2xl font-bold ml-5">
+                  Hints
+                </Text>
+                <TouchableOpacity onPress={() => setModalVisible(false)}>
+                  <Ionicons name="close" size={25} />
+                </TouchableOpacity>
+              </View>
               <Swiper
                 loop={false}
                 showsPagination={true}
