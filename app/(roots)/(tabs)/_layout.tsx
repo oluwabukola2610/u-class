@@ -27,7 +27,7 @@ export default function Layout() {
         options={{
           headerShown: false,
           tabBarIcon: ({ focused }) => (
-            <View className=" items-center">
+            <View className=" items-center ">
               <Ionicons
                 name={focused ? "home" : "home-outline"}
                 size={25}
@@ -37,7 +37,7 @@ export default function Layout() {
               <Text
                 style={{
                   color: focused ? "#009951" : "black",
-                  marginLeft: 5,
+                  marginLeft: 2,
                   fontSize: 16,
                 }}
               >
@@ -64,7 +64,7 @@ export default function Layout() {
               <Text
                 style={{
                   color: focused ? "#009951" : "black",
-                  marginLeft: 5,
+                  marginLeft: 2,
                   fontSize: 16,
                 }}
               >

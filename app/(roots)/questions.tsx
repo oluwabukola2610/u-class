@@ -33,6 +33,7 @@ import {
   width,
 } from "@/constants";
 import Swiper from "react-native-swiper";
+import Grid from "@/components/Grid";
 
 const Questions = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -43,6 +44,8 @@ const Questions = () => {
   const [showLayer, setShowLayer] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [isImage1, setIsImage1] = useState(true);
+  const [grid, setGrid] = useState(false);
+
   const swiperRef = useRef<Swiper>(null);
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
@@ -58,6 +61,7 @@ const Questions = () => {
     };
   });
 
+  console.log(answers);
   const handleSwipe = (direction: string) => {
     const nextIndex = (currentIndex + 1) % questionsData.length;
 
@@ -67,8 +71,11 @@ const Questions = () => {
       [questionsData[currentIndex].id]: direction,
     }));
     // Move to the next image/question
-    setCurrentIndex(nextIndex);
+    if (nextIndex == 0) {
+      console.log("goinf no where");
+    } else setCurrentIndex(nextIndex);
   };
+  console.log(currentIndex);
 
   const onGestureEvent = (event: any) => {
     const { translationX, translationY } = event.nativeEvent;
@@ -144,12 +151,12 @@ const Questions = () => {
         {["30%", "70%", "100%", "Unsure"].map((option, index) => (
           <TouchableOpacity
             key={option}
-            className="flex-1 items-center py-2 bg-white rounded-lg"
+            className="flex-1 items-center px-2 py-6 bg-white rounded-lg border   border-green-500"
             style={{
               backgroundColor: activeOptionIndex === index ? "green" : "white",
             }}
           >
-            <Text className="text-lg">{option}</Text>
+            <Text className="text-lg ">{option}</Text>
           </TouchableOpacity>
         ))}
       </View>
@@ -178,6 +185,7 @@ const Questions = () => {
         <Text className="mb-10 text-[16px] italic text-gray-400">
           (Swipe right,left or down)
         </Text>
+
         <View className="w-full h-[50%] items-center">
           <GestureHandlerRootView>
             <PanGestureHandler
@@ -185,7 +193,7 @@ const Questions = () => {
               onEnded={onGestureEnd}
             >
               <Animated.View style={[animatedStyle]}>
-                {renderImageLayer()}
+                {/* {renderImageLayer()} */}
                 <Image
                   source={
                     isImage1
@@ -198,6 +206,7 @@ const Questions = () => {
                   }}
                   className=" mt-4"
                 />
+
                 {questionsData[currentIndex].type === "yesno" && (
                   <View className="absolute flex-row justify-between w-full mb-5  top-[45%]">
                     <TouchableOpacity className="flex left-3 bg-white w-12 h-12 rounded-lg justify-center items-center">
@@ -214,6 +223,9 @@ const Questions = () => {
                     </TouchableOpacity>
                   </View>
                 )}
+
+                {grid && <Grid />}
+
                 <View className="absolute flex-row justify-between w-full  bottom-[2%]">
                   <TouchableOpacity
                     onPress={() => {
@@ -226,21 +238,31 @@ const Questions = () => {
                       Layer{isImage1 ? 1 : 2}
                     </Text>
                   </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => {
-                      setModalVisible(true);
-                    }}
-                    className=" right-3 rounded-lg justify-center items-center"
-                  >
-                    <Feather name="info" size={24} color="white" />
-                  </TouchableOpacity>
+                  <View className="flex flex-row right-3 justify-center items-center gap-3">
+                    <TouchableOpacity
+                      onPress={() => {
+                        setGrid((prev) => !prev);
+                      }}
+                      className="  rounded-md justify-center items-center border border-white "
+                    >
+                      <MaterialIcons name="grid-3x3" size={20} color="white" />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => {
+                        setModalVisible(true);
+                      }}
+                      className="  rounded-lg justify-center items-center"
+                    >
+                      <Feather name="info" size={24} color="white" />
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </Animated.View>
             </PanGestureHandler>
           </GestureHandlerRootView>
         </View>
         {questionsData[currentIndex].type === "yesno" && (
-          <TouchableOpacity className="flex  bg-white p-3 rounded-lg justify-center items-center mt-10">
+          <TouchableOpacity className="flex  bg-white p-3 rounded-lg justify-center items-center mt-14">
             <MaterialIcons name="not-interested" size={24} color="red" />
             <Text className="font-bold">Unsure</Text>
           </TouchableOpacity>
