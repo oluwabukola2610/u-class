@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Image, Text, ScrollView, TouchableOpacity } from "react-native";
 import { image } from "@/constants";
 import { router } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import { getValueFor } from "@/constants/secureStore";
 
 const imagesGrid1 = [
   { id: 1, source: require("@/assets/images/Frame 427319375.png") },
@@ -21,8 +23,19 @@ const handleImagePress = (imageId: number) => {
 };
 
 const Home = () => {
+  const [name, setName] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchName = async () => {
+      const storedName = await getValueFor("name");
+      setName(storedName); // Update the state once the value is retrieved
+    };
+    fetchName();
+  }, []);
   return (
     <View className="flex-1 ">
+      <StatusBar style="dark" />
+
       <Image
         source={image.bg}
         style={{
@@ -33,7 +46,7 @@ const Home = () => {
         }}
       />
       <View className="p-6 pt-20 w-full">
-        <Text className="text-xl font-bold">Welcome Praise,</Text>
+        <Text className="text-xl font-bold">Welcome {name}</Text>
         <Text className="text-base text-gray-600">
           Get started on a project
         </Text>

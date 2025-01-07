@@ -16,6 +16,7 @@ import { Link, router } from "expo-router";
 
 import CustomBackground from "@/components/CustomBackground";
 import CustomButton from "@/components/Custombutton";
+import { save } from "@/constants/secureStore";
 
 const SignIn = () => {
   const [checked, setChecked] = useState(false);
@@ -49,6 +50,7 @@ const SignIn = () => {
   };
 
   const onSubmit = (data: any) => {
+    save("name", data.username);
     console.log("Form Data:", data);
     router.push("/home");
   };

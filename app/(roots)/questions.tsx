@@ -34,6 +34,11 @@ import {
 } from "@/constants";
 import Swiper from "react-native-swiper";
 import Grid from "@/components/Grid";
+import { router } from "expo-router";
+import LottieView from "lottie-react-native";
+import { StatusBar } from "expo-status-bar";
+
+//three more features to build, alert to show they have finihes d 5 images, then the final result, then tutorial in th3e app
 
 const Questions = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -45,12 +50,31 @@ const Questions = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [isImage1, setIsImage1] = useState(true);
   const [grid, setGrid] = useState(false);
+  const [taskCompletionModalVisible, setTaskCompletionModalVisible] =
+    useState(false);
+  const [fiveTaskCompletionModalVisible, setFiveTaskCompletionModalVisible] =
+    useState(false);
+  const animation = useRef<LottieView>(null);
 
   const swiperRef = useRef<Swiper>(null);
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
   const imageScale = useSharedValue(1);
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (fiveTaskCompletionModalVisible) {
+      timer = setTimeout(() => {
+        setFiveTaskCompletionModalVisible(false);
+      }, 3000); // 5 seconds
+    }
+    return () => clearTimeout(timer);
+  }, [fiveTaskCompletionModalVisible]);
 
+  useEffect(() => {
+    if (currentIndex == 5 || currentIndex == 10 || currentIndex == 15) {
+      setFiveTaskCompletionModalVisible(true);
+    }
+  }, [currentIndex]);
   const animatedStyle = useAnimatedStyle(() => {
     return {
       transform: [
@@ -61,7 +85,7 @@ const Questions = () => {
     };
   });
 
-  console.log(answers);
+  console.log(answers, currentIndex);
   const handleSwipe = (direction: string) => {
     const nextIndex = (currentIndex + 1) % questionsData.length;
 
@@ -72,7 +96,8 @@ const Questions = () => {
     }));
     // Move to the next image/question
     if (nextIndex == 0) {
-      console.log("goinf no where");
+      console.log("going no where");
+      setTaskCompletionModalVisible(true);
     } else setCurrentIndex(nextIndex);
   };
   console.log(currentIndex);
@@ -139,24 +164,47 @@ const Questions = () => {
 
   const getSelectedOptionn = (translationX: number) => {
     setActiveOptionIndex(null);
-    if (translationX < -90) return "30%";
-    if (translationX < 0 && translationX > -90) return "70%";
-    if (translationX > 0 && translationX < 90) return "100%";
+    if (translationX < -90)
+      return questionsData[currentIndex].type == "percent"
+        ? "30%"
+        : "broadleaf";
+    if (translationX < 0 && translationX > -90)
+      return questionsData[currentIndex].type == "percent" ? "70%" : "conifer";
+    if (translationX > 0 && translationX < 90)
+      return questionsData[currentIndex].type == "percent" ? "100%" : "mixed";
     return "unsure";
   };
 
   const renderPercentageOptions = () => {
     return (
       <View className="flex-row w-full px-4 mb-5 mt-auto justify-center gap-x-1">
-        {["30%", "70%", "100%", "Unsure"].map((option, index) => (
+        {["0-30%", "31-70%", "71-100%", "Unsure"].map((option, index) => (
           <TouchableOpacity
             key={option}
-            className="flex-1 items-center px-2 py-6 bg-white rounded-lg border   border-green-500"
+            className="flex-1 items-center px-1 py-5 bg-white rounded-lg  border-2  border-green-700"
             style={{
               backgroundColor: activeOptionIndex === index ? "green" : "white",
             }}
           >
-            <Text className="text-lg ">{option}</Text>
+            <Text className="text-md text-green-900">{option}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+    );
+  };
+
+  const renderDominantTreeOptions = () => {
+    return (
+      <View className="flex-row w-full px-4 mb-5 mt-auto justify-center gap-x-1">
+        {["Braodleaf", "Conifer", "Mixed", "Unsure"].map((option, index) => (
+          <TouchableOpacity
+            key={option}
+            className="flex-1 items-center px-1 py-5 bg-white rounded-lg  border-2  border-green-700"
+            style={{
+              backgroundColor: activeOptionIndex === index ? "green" : "white",
+            }}
+          >
+            <Text className="text-md text-green-900">{option}</Text>
           </TouchableOpacity>
         ))}
       </View>
@@ -178,12 +226,14 @@ const Questions = () => {
 
   return (
     <CustomBackground>
+      <StatusBar style="dark" />
+
       <View className="flex-1  items-center">
         <Text className="text-lg text-center font-bold text-[20px] mt-0 px-1.5 leading-5">
           {questionsData[currentIndex].question}
         </Text>
         <Text className="mb-10 text-[16px] italic text-gray-400">
-          (Swipe right,left or down)
+          {questionsData[currentIndex].instruction}
         </Text>
 
         <View className="w-full h-[50%] items-center">
@@ -269,11 +319,60 @@ const Questions = () => {
         )}
         {questionsData[currentIndex].type === "percent" &&
           renderPercentageOptions()}
+        {questionsData[currentIndex].type === "broadleaf" &&
+          renderDominantTreeOptions()}
 
+        <Modal
+          visible={taskCompletionModalVisible || fiveTaskCompletionModalVisible}
+          transparent={true}
+          animationType="fade"
+        >
+          <View className="flex-1 justify-center items-center bg-black/90">
+            <View className="bg-green-50 rounded-lg p-5 w-[80%] h-[200px]">
+              <View className="flex  items-center justify-between px-1 mb-2 gap-6">
+                <Text className="text-center text-2xl font-bold">
+                  {taskCompletionModalVisible
+                    ? "Thanks for completing all your tasks"
+                    : "Congratulations, you just completed five tasks"}
+                </Text>
+                {taskCompletionModalVisible && (
+                  <Text className="">Score: 18/20</Text>
+                )}
+                <TouchableOpacity
+                  className=" items-center  bg-white rounded-lg  px-5 py-3 border-2 border-green-800"
+                  style={{}}
+                  onPress={() => {
+                    setTaskCompletionModalVisible(false);
+                    setFiveTaskCompletionModalVisible(false);
+                    if (taskCompletionModalVisible)
+                      router.navigate("/(roots)/(tabs)/home");
+                  }}
+                >
+                  <Text className="text-md px-1 text-green-900">Done</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+            <LottieView
+              autoPlay
+              ref={animation}
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                pointerEvents: "none",
+                // backgroundColor: "red",
+              }}
+              // Find more Lottie files at https://lottiefiles.com/featured
+              source={require("../../assets/lottie.json")}
+            />
+          </View>
+        </Modal>
         <Modal visible={modalVisible} transparent={true} animationType="fade">
           <View className="flex-1 justify-center items-center bg-black/90">
             <View className="bg-green-50 rounded-lg p-3 w-[94%] h-[350px]">
-              <View className="flex flex-row items-center justify-between px-1 ">
+              <View className="flex flex-row items-center justify-between px-1 mb-2">
                 <Text className="text-center flex-grow text-2xl font-bold ml-5">
                   Hints
                 </Text>
@@ -282,7 +381,7 @@ const Questions = () => {
                 </TouchableOpacity>
               </View>
               <Swiper
-                loop={false}
+                loop={true}
                 showsPagination={true}
                 ref={swiperRef}
                 dotStyle={{
@@ -300,19 +399,27 @@ const Questions = () => {
                   marginHorizontal: 3,
                 }}
               >
-                {questionsData.map((question, index) => (
+                {questionsData[currentIndex].modal.map((question, index) => (
                   <View
                     key={index}
                     className="flex-1 justify-center items-center"
                   >
                     <Image
-                      source={image.forest}
+                      source={question.image}
                       style={{
                         width: "100%",
                         height: "100%",
                         resizeMode: "contain",
                       }}
                     />
+                    <TouchableOpacity
+                      className="absolute bottom-12  items-center px-1 py-2 bg-white rounded-lg "
+                      style={{}}
+                    >
+                      <Text className="text-md px-1 text-green-900">
+                        {question.id}
+                      </Text>
+                    </TouchableOpacity>
                   </View>
                 ))}
               </Swiper>

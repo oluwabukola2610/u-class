@@ -10,7 +10,8 @@ export default function Layout() {
           backgroundColor: "#D8FBEA",
           height: 75,
           paddingBottom: 10,
-          paddingHorizontal: 10,
+          paddingTop: 10,
+          paddingHorizontal: 0,
           shadowColor: "#000",
           shadowOffset: { width: 0, height: 5 },
           shadowOpacity: 0.3,
@@ -27,10 +28,10 @@ export default function Layout() {
         options={{
           headerShown: false,
           tabBarIcon: ({ focused }) => (
-            <View className=" items-center ">
+            <View className=" items-center w-20">
               <Ionicons
                 name={focused ? "home" : "home-outline"}
-                size={25}
+                size={20}
                 color={focused ? "#009951" : "black"}
               />
 
@@ -38,7 +39,7 @@ export default function Layout() {
                 style={{
                   color: focused ? "#009951" : "black",
                   marginLeft: 2,
-                  fontSize: 16,
+                  fontSize: 12,
                 }}
               >
                 Home
@@ -54,18 +55,18 @@ export default function Layout() {
         options={{
           headerShown: false,
           tabBarIcon: ({ focused }) => (
-            <View className=" items-center">
+            <View className="w-20 items-center">
               <Ionicons
                 name={focused ? "person-outline" : "person-outline"}
-                size={25}
+                size={20}
                 color={focused ? "#009951" : "black"}
               />
 
               <Text
                 style={{
                   color: focused ? "#009951" : "black",
-                  marginLeft: 2,
-                  fontSize: 16,
+                  marginLeft: 0,
+                  fontSize: 12,
                 }}
               >
                 Profile

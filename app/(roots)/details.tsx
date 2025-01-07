@@ -4,6 +4,7 @@ import { image } from "@/constants";
 import CustomButton from "@/components/Custombutton";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 
 const Details = () => {
   const router = useRouter();
@@ -14,6 +15,8 @@ const Details = () => {
 
   return (
     <View className="flex-1">
+      <StatusBar style="dark" />
+
       <Image
         source={image.bg}
         style={{
@@ -68,6 +71,7 @@ const Details = () => {
             title="Tutorial"
             textStyles="text-[#009951]"
             containerStyles="bg-[#7878801F]"
+            handlePress={() => router.push("/tutorial")}
           />
         </View>
       </View>

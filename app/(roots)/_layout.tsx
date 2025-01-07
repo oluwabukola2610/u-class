@@ -24,6 +24,22 @@ const Layout = () => {
           ),
         }}
       />
+      <Stack.Screen
+        name="tutorial"
+        options={{
+          headerTransparent: true,
+          title: "Tutorial",
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => {
+                router.back();
+              }}
+            >
+              <Ionicons name="arrow-back-outline" size={24} color="#009951" />
+            </TouchableOpacity>
+          ),
+        }}
+      />
     </Stack>
   );
 };
