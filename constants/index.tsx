@@ -18,7 +18,7 @@ export const questionsData = [
       },
       {
         id: "non-forest",
-        image: require("@/assets/images/water.png"),
+        image: require("@/assets/images/grassland.png"),
       },
     ],
   },
@@ -36,7 +36,7 @@ export const questionsData = [
       },
       {
         id: "non-forest",
-        image: require("@/assets/images/water.png"),
+        image: require("@/assets/images/grassland.png"),
       },
     ],
   },
@@ -54,7 +54,7 @@ export const questionsData = [
       },
       {
         id: "non-forest",
-        image: require("@/assets/images/water.png"),
+        image: require("@/assets/images/grassland.png"),
       },
     ],
   },
@@ -72,7 +72,7 @@ export const questionsData = [
       },
       {
         id: "non-forest",
-        image: require("@/assets/images/water.png"),
+        image: require("@/assets/images/grassland.png"),
       },
     ],
   },
@@ -90,7 +90,7 @@ export const questionsData = [
       },
       {
         id: "non-forest",
-        image: require("@/assets/images/water.png"),
+        image: require("@/assets/images/grassland.png"),
       },
     ],
   },

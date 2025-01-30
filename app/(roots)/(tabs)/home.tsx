@@ -1,9 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { View, Image, Text, ScrollView, TouchableOpacity } from "react-native";
+import {
+  View,
+  Image,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  BackHandler,
+} from "react-native";
 import { image } from "@/constants";
-import { router } from "expo-router";
+import { router, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { getValueFor } from "@/constants/secureStore";
+import { Alert } from "react-native";
 
 const imagesGrid1 = [
   { id: 1, source: require("@/assets/images/Frame 427319375.png") },
@@ -32,6 +40,34 @@ const Home = () => {
     };
     fetchName();
   }, []);
+
+  // const router = useRouter();
+
+  // useEffect(() => {
+  //   const backAction = () => {
+  //     // Show confirmation before navigating back
+  //     Alert.alert("Hold on!", "Do you want to go back to the Sign In screen?", [
+  //       {
+  //         text: "Cancel",
+  //         onPress: () => null,
+  //         style: "cancel",
+  //       },
+  //       {
+  //         text: "YES",
+  //         onPress: () => console.log("not going back"), // Replace with your sign-in route
+  //       },
+  //     ]);
+  //     return true; // Prevent default back action
+  //   };
+
+  //   const backHandler = BackHandler.addEventListener(
+  //     "hardwareBackPress",
+  //     backAction
+  //   );
+
+  //   return () => backHandler.remove(); // Cleanup the listener
+  // }, []);
+
   return (
     <View className="flex-1 ">
       <StatusBar style="dark" />

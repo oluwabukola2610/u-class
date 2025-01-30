@@ -18,7 +18,7 @@ const CustomBackground: React.FC<CustomBackgroundProps> = ({ children }) => {
           zIndex: -1,
         }}
       />
-      <SafeAreaView className="flex-1">{children}</SafeAreaView>
+      <SafeAreaView className="flex-1 pt-6">{children}</SafeAreaView>
     </View>
   );
 };

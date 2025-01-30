@@ -17,6 +17,7 @@ import { Link, router } from "expo-router";
 import CustomBackground from "@/components/CustomBackground";
 import CustomButton from "@/components/Custombutton";
 import { save } from "@/constants/secureStore";
+import { StatusBar } from "expo-status-bar";
 
 const SignIn = () => {
   const [checked, setChecked] = useState(false);
@@ -36,27 +37,30 @@ const SignIn = () => {
     username: {
       required: "Username is required",
       minLength: {
-        value: 6,
+        value: 4,
         message: "Username is invalid",
       },
     },
     password: {
       required: "Password is required",
       minLength: {
-        value: 6,
+        value: 4,
         message: "Password must be at least 6 characters long",
       },
     },
   };
 
   const onSubmit = (data: any) => {
+    Keyboard.dismiss();
     save("name", data.username);
     console.log("Form Data:", data);
-    router.push("/home");
+    router.replace("/home");
   };
 
   return (
     <CustomBackground>
+      <StatusBar style="dark" />
+
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         className="flex-1"

@@ -39,7 +39,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
         className={` h-12 px-4 border-gray-200 rounded-lg w-full border border-gray/50 focus:border-gray flex items-center justify-between flex-row bg-white`}
       >
         <TextInput
-          className="text-base font-normal "
+          className="text-base font-normal w-[85%]"
           value={value}
           onChangeText={handlechange}
           keyboardType={keyboardType}
